@@ -1,0 +1,44 @@
+{
+  "agent_name": "RetailDataQualityAndTaxonomyAgent",
+  "schema_valid": true,
+  "tool_calls_executed": 3,
+  "total_distinct_stock_codes": 4070,
+  "merchandise_sku_count": 4059,
+  "non_merchandise_code_count": 11,
+  "quarantined_rows_triaged": 2,
+  "guest_checkout_lines_governed": 135078,
+  "duplicate_lines_flagged": 5269,
+  "remediation_actions": [
+    {
+      "tool_call": "inspect_quarantine_anomalies",
+      "quarantined_row_count": 2,
+      "disposition": "QUARANTINE_NEGATIVE_UNIT_PRICE",
+      "sql_remediation": "INSERT INTO retail_quarantine.negative_price_audit SELECT * FROM retail_bronze.invoice_lines WHERE unit_price_mills < 0;"
+    },
+    {
+      "tool_call": "reconcile_sku_taxonomy",
+      "total_distinct_stock_codes": 4070,
+      "merchandise_sku_count": 4059,
+      "non_merchandise_fee_codes": [
+        "AMAZONFEE",
+        "B",
+        "BANK CHARGES",
+        "CRUK",
+        "D",
+        "DOT",
+        "M",
+        "PADS",
+        "POST",
+        "S",
+        "m"
+      ],
+      "disposition": "TAG_NON_MERCH_FEES_AND_POSTAGE"
+    },
+    {
+      "tool_call": "audit_guest_and_duplicate_lines",
+      "guest_checkout_lines": 135078,
+      "duplicate_flagged_lines": 5269,
+      "disposition": "RETAIN_IN_LEDGER_WITH_EXPLICIT_BUCKET_FLAGS"
+    }
+  ]
+}

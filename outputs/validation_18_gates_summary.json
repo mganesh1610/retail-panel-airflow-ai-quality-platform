@@ -1,0 +1,100 @@
+{
+  "dataset": {
+    "name": "UCI Online Retail Consumer Shopping Basket Dataset",
+    "doi": "10.24432/C5BW33",
+    "url": "https://archive.ics.uci.edu/dataset/352/online+retail",
+    "archive_sha256": "f5385cbb54bbebf7196389109c6b0621faab0c304e3702548165e71c84aede8b",
+    "source_rows": 541909,
+    "promoted_silver_rows": 541907,
+    "quarantined_negative_price_rows": 2,
+    "known_customer_accounts": 4372,
+    "guest_checkout_rows": 135078,
+    "distinct_stock_codes": 4070,
+    "countries": 38,
+    "country_month_groups": 314,
+    "net_sales_gbp_mills": 9769872054,
+    "gross_sales_gbp_mills": 10666684544,
+    "credit_returns_gbp_mills": 896812490
+  },
+  "quality_and_model_gates": {
+    "total_gates": 18,
+    "passed_gates": 18,
+    "failed_gates": 0,
+    "all_passed": true,
+    "assertions": {
+      "gate_01_archive_sha256_verified": true,
+      "gate_02_source_row_count_exact": true,
+      "gate_03_required_schema_columns_present": true,
+      "gate_04_negative_price_quarantine": true,
+      "gate_05_promoted_silver_conservation": true,
+      "gate_06_monetary_ledger_mills_parity": true,
+      "gate_07_cancellation_invoice_prefix_flagging": true,
+      "gate_08_guest_checkout_identity_preservation": true,
+      "gate_09_known_household_account_count": true,
+      "gate_10_sku_catalog_normalization": true,
+      "gate_11_timestamp_chronology_bounds": true,
+      "gate_12_duplicate_line_audit_flagging": true,
+      "gate_13_ai_agent_structured_json_schema": true,
+      "gate_14_feature_store_no_null_leakage": true,
+      "gate_15_statistical_model_roc_auc_threshold": true,
+      "gate_16_statistical_model_brier_calibration": true,
+      "gate_17_feature_population_stability_index": true,
+      "gate_18_snowflake_gold_mart_parity": true
+    }
+  },
+  "statistical_model_evaluation": {
+    "accounts_evaluated": 4372,
+    "train_accounts": 3270,
+    "holdout_accounts": 1102,
+    "holdout_roc_auc": 0.9366,
+    "holdout_brier_score": 0.1018,
+    "prior_baseline_brier": 0.2375,
+    "brier_relative_improvement_pct": 57.16,
+    "score_psi": 0.0007,
+    "null_or_inf_feature_rows": 0
+  },
+  "internal_ai_agent_triage": {
+    "agent_name": "RetailDataQualityAndTaxonomyAgent",
+    "schema_valid": true,
+    "tool_calls_executed": 3,
+    "total_distinct_stock_codes": 4070,
+    "merchandise_sku_count": 4059,
+    "non_merchandise_code_count": 11,
+    "quarantined_rows_triaged": 2,
+    "guest_checkout_lines_governed": 135078,
+    "duplicate_lines_flagged": 5269,
+    "remediation_actions": [
+      {
+        "tool_call": "inspect_quarantine_anomalies",
+        "quarantined_row_count": 2,
+        "disposition": "QUARANTINE_NEGATIVE_UNIT_PRICE",
+        "sql_remediation": "INSERT INTO retail_quarantine.negative_price_audit SELECT * FROM retail_bronze.invoice_lines WHERE unit_price_mills < 0;"
+      },
+      {
+        "tool_call": "reconcile_sku_taxonomy",
+        "total_distinct_stock_codes": 4070,
+        "merchandise_sku_count": 4059,
+        "non_merchandise_fee_codes": [
+          "AMAZONFEE",
+          "B",
+          "BANK CHARGES",
+          "CRUK",
+          "D",
+          "DOT",
+          "M",
+          "PADS",
+          "POST",
+          "S",
+          "m"
+        ],
+        "disposition": "TAG_NON_MERCH_FEES_AND_POSTAGE"
+      },
+      {
+        "tool_call": "audit_guest_and_duplicate_lines",
+        "guest_checkout_lines": 135078,
+        "duplicate_flagged_lines": 5269,
+        "disposition": "RETAIN_IN_LEDGER_WITH_EXPLICIT_BUCKET_FLAGS"
+      }
+    ]
+  }
+}

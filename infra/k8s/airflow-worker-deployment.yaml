@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airflow-retail-quality-worker
+  namespace: retail-data-quality
+  labels:
+    app: airflow-retail-quality-worker
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: airflow-retail-quality-worker
+  template:
+    metadata:
+      labels:
+        app: airflow-retail-quality-worker
+    spec:
+      containers:
+        - name: quality-agent-worker
+          image: retail-panel-quality-platform:1.0.0
+          command: ["python3", "-m", "src.pipeline_and_model_gates"]
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+            limits:
+              cpu: "1000m"
+              memory: "2Gi"

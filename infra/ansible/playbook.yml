@@ -1,0 +1,23 @@
+---
+- name: Configure Airflow Worker & Data Quality Agent Runtime
+  hosts: airflow_workers
+  become: true
+  vars:
+    app_dir: /opt/retail-panel-airflow-ai-quality-platform
+    python_version: "3.12"
+  tasks:
+    - name: Ensure application directory exists
+      ansible.builtin.file:
+        path: "{{ app_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Deploy Airflow DAGs and custom quality operators
+      ansible.builtin.synchronize:
+        src: ../../dags/
+        dest: "{{ app_dir }}/dags/"
+
+    - name: Verify data quality and model evaluation test suite before worker restart
+      ansible.builtin.command:
+        cmd: python3 -m unittest discover -s tests -p "test_*.py"
+        chdir: "{{ app_dir }}"
