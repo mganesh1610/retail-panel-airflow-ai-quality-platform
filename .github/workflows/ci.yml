@@ -1,0 +1,30 @@
+name: Data Quality & Pipeline CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  unit-and-dq-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip openpyxl pytest
+
+      - name: Run root Airflow & model gate tests
+        run: python -m unittest discover -s tests -p "test_*.py" -v
+
+      - name: Run REST API -> S3 -> Snowflake star-schema pipeline & tests
+        run: |
+          python -m api_s3_ingestion_ci_mart.src.api_s3_snowflake_etl
+          python -m pytest api_s3_ingestion_ci_mart/tests/test_api_s3_pipeline.py -v

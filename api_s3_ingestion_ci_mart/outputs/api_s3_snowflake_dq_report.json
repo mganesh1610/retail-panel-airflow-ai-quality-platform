@@ -1,0 +1,110 @@
+{
+  "pipeline_name": "rest_api_s3_snowflake_star_schema_mart",
+  "source_api_url": "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2026-10-01&endtime=2026-10-31&minmagnitude=2.5",
+  "source_raw_sha256": "d20cd5fa21aa7bfbc824a5699ecab1e3e47eb1dd611e735832ca6cb351a72698",
+  "expected_raw_sha256_match": true,
+  "source_feature_count": 2411,
+  "promoted_fact_count": 2411,
+  "quarantined_feature_count": 0,
+  "duplicate_updates_resolved": 0,
+  "star_schema_and_dq": {
+    "fact_row_count": 2411,
+    "dim_network_count": 11,
+    "dim_region_count": 130,
+    "dim_magnitude_tier_count": 4,
+    "s3_daily_partition_count": 30,
+    "dq_gates": {
+      "gate_01_non_empty_fact_load": true,
+      "gate_02_pk_uniqueness": true,
+      "gate_03_zero_null_magnitude": true,
+      "gate_04_fk_region_integrity": true,
+      "gate_05_fk_network_integrity": true,
+      "gate_06_fk_tier_integrity": true,
+      "gate_07_geospatial_bounds": true,
+      "gate_08_daily_s3_partitions_present": true,
+      "gate_09_multi_network_dim_populated": true,
+      "gate_10_sqlite_integrity_ok": true
+    },
+    "dq_gates_passed": 10,
+    "dq_gates_total": 10,
+    "all_dq_gates_passed": true,
+    "tier_breakdown": [
+      {
+        "tier_code": "MINOR_2.5_TO_3.9",
+        "event_count": 913,
+        "avg_magnitude": 2.859,
+        "max_magnitude": 3.99
+      },
+      {
+        "tier_code": "LIGHT_4.0_TO_4.9",
+        "event_count": 1280,
+        "avg_magnitude": 4.453,
+        "max_magnitude": 4.9
+      },
+      {
+        "tier_code": "MODERATE_5.0_TO_5.9",
+        "event_count": 197,
+        "avg_magnitude": 5.225,
+        "max_magnitude": 5.9
+      },
+      {
+        "tier_code": "STRONG_6.0_PLUS",
+        "event_count": 21,
+        "avg_magnitude": 6.414,
+        "max_magnitude": 7.7
+      }
+    ],
+    "top_regions": [
+      {
+        "region_name": "Alaska",
+        "event_count": 634,
+        "max_magnitude": 5.6
+      },
+      {
+        "region_name": "Vanuatu",
+        "event_count": 225,
+        "max_magnitude": 6.8
+      },
+      {
+        "region_name": "Panama",
+        "event_count": 160,
+        "max_magnitude": 7.7
+      },
+      {
+        "region_name": "Indonesia",
+        "event_count": 134,
+        "max_magnitude": 5.7
+      },
+      {
+        "region_name": "Russia",
+        "event_count": 91,
+        "max_magnitude": 6.9
+      },
+      {
+        "region_name": "China",
+        "event_count": 61,
+        "max_magnitude": 7.0
+      },
+      {
+        "region_name": "Japan",
+        "event_count": 61,
+        "max_magnitude": 5.5
+      },
+      {
+        "region_name": "Papua New Guinea",
+        "event_count": 58,
+        "max_magnitude": 6.2
+      },
+      {
+        "region_name": "CA",
+        "event_count": 54,
+        "max_magnitude": 4.01
+      },
+      {
+        "region_name": "Philippines",
+        "event_count": 48,
+        "max_magnitude": 5.8
+      }
+    ]
+  }
+}
